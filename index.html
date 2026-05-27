@@ -61,17 +61,7 @@
             flex-direction: column;
             perspective: 1000px; 
             overflow: hidden;
-        }
-
-        /* Dedicated layer for bugs to prevent flexbox distortion */
-        #bug-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 5;
+            cursor: pointer; /* Cue to indicate interaction is possible */
         }
 
         /* Container for the main chaotic spider images */
@@ -93,14 +83,10 @@
         }
 
         /* Scurrying Spiders Layer */
-        .scurry-wrapper {
+        .scurry-spider {
             position: absolute;
             pointer-events: none;
-        }
-
-        .scurry-spider {
-            width: 100%;
-            height: auto;
+            z-index: 5;
             object-fit: contain;
             filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.9));
         }
@@ -127,7 +113,7 @@
             0%   { transform: translate(6px, 6px)   rotate(4deg)   scale(1.15); }
             20%  { transform: translate(-10px, 9px)  rotate(2deg)   scale(1.2); }
             40%  { transform: translate(-3px, 8px)  rotate(5deg)   scale(1.1); }
-            60%  { transform: translate(-11px, 3px) rotate(3deg)   scale(1.25); }
+            60%  { transform: translate(-11px, 3px)  rotate(3deg)   scale(1.25); }
             80%  { transform: translate(-5px, -8px) rotate(6deg)   scale(1.15); }
             100% { transform: translate(-2px, 7px)  rotate(0deg)   scale(1.1); }
         }
@@ -153,9 +139,9 @@
             animation: bug-shake 0.04s infinite linear;
         }
         @keyframes bug-shake {
-            0% { transform: translate(2px, 3px); }
-            50% { transform: translate(-3px, -2px); }
-            100% { transform: translate(2px, 3px); }
+            0% { margin: 2px 3px; }
+            50% { margin: -3px -2px; }
+            100% { margin: 2px 3px; }
         }
 
         /* Flash background */
@@ -168,22 +154,15 @@
             100% { background-color: rgba(50, 0, 0, 0.98); } 
         }
 
-        /* Close Button */
-        .close-btn {
-            margin-top: 40px;
-            padding: 12px 30px;
-            background-color: #111;
-            color: #666;
-            border: 1px solid #333;
-            cursor: pointer;
-            font-size: 0.9rem;
-            border-radius: 3px;
+        /* Optional helper notification text */
+        .escape-hint {
+            position: absolute;
+            bottom: 20px;
+            color: #444;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
             z-index: 10;
-        }
-        .close-btn:hover {
-            color: #fff;
-            border-color: #ff0000;
-            background-color: #200;
         }
     </style>
 </head>
@@ -195,82 +174,65 @@
     </div>
 
     <div style="text-align: center;">
-        <h1>Loading Content...</h1>
-        <p>Please wait a moment while the dashboard syncs.</p>
+        <h1>Loading Dashboard Content...</h1>
+        <p>Please wait a moment while the system synchronizes.</p>
     </div>
 
-    <div id="jumpscare" class="scare-overlay flash-bg">
-        <div id="bug-layer"></div>
-
+    <div id="jumpscare" class="scare-overlay flash-bg" ondblclick="closeScare()">
         <div class="spider-container chaotic-vibration">
             <img class="spider-img" src="https://server-a708dbd3cd91a21f.dev-studio.neynar.com/1779847394248.png" alt="Spider 1">
             <img class="spider-img" src="https://server-a708dbd3cd91a21f.dev-studio.neynar.com/1779847342571.png" alt="Spider 2">
         </div>
         
         <div class="scare-text chaotic-vibration">RUN</div>
-        
-        <button class="close-btn" onclick="closeScare()">Close</button>
+        <div class="escape-hint">Double-Click to Escape</div>
     </div>
 
-    <audio id="scream-audio" src="https://actions.google.com/sounds/v1/horror/creepy_gasp_scream.ogg" preload="auto"></audio>
-
     <script>
-        const audio = document.getElementById('scream-audio');
+        const jumpScareAudio = new Audio('https://raw.githubusercontent.com/Cdo1985/rar/main/Scary%20Woman%20Screaming%20-%20Sound%20Effect%20(HD).mp3');
         const jumpscareOverlay = document.getElementById('jumpscare');
-        const bugLayer = document.getElementById('bug-layer');
         const littleSpiderSrc = 'https://server-a708dbd3cd91a21f.dev-studio.neynar.com/1779821114849.png';
 
-        function spawnScurryingSpiders() {
-            bugLayer.innerHTML = '';
+        function preSpawnSpiders() {
             const count = 35; 
-            
             for (let i = 0; i < count; i++) {
-                const wrapper = document.createElement('div');
                 const img = document.createElement('img');
-                
-                wrapper.classList.add('scurry-wrapper');
                 img.src = littleSpiderSrc;
                 img.classList.add('scurry-spider', 'bug-twitch');
 
                 const size = Math.floor(Math.random() * 60) + 25; 
-                wrapper.style.width = `${size}px`;
-
-                wrapper.style.top = `${Math.floor(Math.random() * 90)}vh`;
-                wrapper.style.left = `${Math.floor(Math.random() * 90)}vw`;
+                img.style.width = `${size}px`;
+                img.style.height = 'auto';
+                img.style.top = `${Math.floor(Math.random() * 90)}vh`;
+                img.style.left = `${Math.floor(Math.random() * 90)}vw`;
 
                 const track = Math.random() > 0.5 ? 'scurry-track-1' : 'scurry-track-2';
                 const duration = (Math.random() * 1.2 + 0.3).toFixed(2); 
-                
-                wrapper.style.animation = `${track} ${duration}s infinite linear`;
+                img.style.animation = `${track} ${duration}s infinite linear`;
 
-                wrapper.appendChild(img);
-                bugLayer.appendChild(wrapper);
+                jumpscareOverlay.appendChild(img);
             }
         }
 
-        function startExperience() {
-            // Instant execution on interaction hook allows audio authorization
-            audio.play().then(() => {
-                // Pause it quickly until the timer fires
-                audio.pause();
-                audio.currentTime = 0;
-            }).catch(e => console.log("Audio setup failed:", e));
+        preSpawnSpiders();
 
+        function startExperience() {
             document.getElementById('interaction-overlay').style.display = 'none';
+            jumpScareAudio.volume = 1.0;
+
+            jumpScareAudio.play().catch(error => {
+                console.error("Audio playback failed:", error);
+            });
 
             setTimeout(() => {
                 jumpscareOverlay.style.display = 'flex';
-                spawnScurryingSpiders(); 
-                audio.volume = 1.0;
-                audio.play().catch(e => console.log("Playback failed after delay:", e));
-            }, 2000);
+            }, 1200);
         }
 
         function closeScare() {
             jumpscareOverlay.style.display = 'none';
-            audio.pause();
-            audio.currentTime = 0;
-            bugLayer.innerHTML = '';
+            jumpScareAudio.pause();
+            jumpScareAudio.currentTime = 0;
         }
     </script>
 
