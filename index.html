@@ -61,7 +61,7 @@
             flex-direction: column;
             perspective: 1000px; 
             overflow: hidden;
-            cursor: pointer; /* Cue to indicate interaction is possible */
+            cursor: pointer;
         }
 
         /* Container for the main chaotic spider images */
@@ -154,7 +154,6 @@
             100% { background-color: rgba(50, 0, 0, 0.98); } 
         }
 
-        /* Optional helper notification text */
         .escape-hint {
             position: absolute;
             bottom: 20px;
@@ -180,8 +179,8 @@
 
     <div id="jumpscare" class="scare-overlay flash-bg" ondblclick="closeScare()">
         <div class="spider-container chaotic-vibration">
-            <img class="spider-img" src="https://server-a708dbd3cd91a21f.dev-studio.neynar.com/1779847394248.png" alt="Spider 1">
-            <img class="spider-img" src="https://server-a708dbd3cd91a21f.dev-studio.neynar.com/1779847342571.png" alt="Spider 2">
+            <img class="spider-img" src="https://raw.githubusercontent.com/Cdo1985/rar/main/image-J7XYh5Cix5CceVeAtkuVXYSGgrhjDL.png" alt="Main Spider 1">
+            <img class="spider-img" src="https://raw.githubusercontent.com/Cdo1985/rar/main/image-RNeZA4HfSA3N9Y5crEqj7FqjkHOG0L.png" alt="Main Spider 2">
         </div>
         
         <div class="scare-text chaotic-vibration">RUN</div>
@@ -189,31 +188,40 @@
     </div>
 
     <script>
+        // Audio pointing directly to your repository asset
         const jumpScareAudio = new Audio('https://raw.githubusercontent.com/Cdo1985/rar/main/Scary%20Woman%20Screaming%20-%20Sound%20Effect%20(HD).mp3');
         const jumpscareOverlay = document.getElementById('jumpscare');
-        const littleSpiderSrc = 'https://server-a708dbd3cd91a21f.dev-studio.neynar.com/1779821114849.png';
+
+        // Scurrying spider variant arrays populated directly from your repo assets
+        const scurrySpiderPool = [
+            'https://raw.githubusercontent.com/Cdo1985/rar/main/image-iYSmCmyEzc2R25UGI9FNcOJsHWNCBM.png',
+            'https://raw.githubusercontent.com/Cdo1985/rar/main/image-s5nwdmWGXtfhMsT3IzxOM9ShujveXM.png'
+        ];
 
         function preSpawnSpiders() {
-            const count = 35; 
+            const count = 40; // Bumped count slightly for better coverage using both assets
             for (let i = 0; i < count; i++) {
                 const img = document.createElement('img');
-                img.src = littleSpiderSrc;
+                
+                // Randomly alternate between your two scurrying spider image assets
+                img.src = scurrySpiderPool[Math.floor(Math.random() * scurrySpiderPool.length)];
                 img.classList.add('scurry-spider', 'bug-twitch');
 
-                const size = Math.floor(Math.random() * 60) + 25; 
+                const size = Math.floor(Math.random() * 55) + 25; 
                 img.style.width = `${size}px`;
                 img.style.height = 'auto';
                 img.style.top = `${Math.floor(Math.random() * 90)}vh`;
                 img.style.left = `${Math.floor(Math.random() * 90)}vw`;
 
                 const track = Math.random() > 0.5 ? 'scurry-track-1' : 'scurry-track-2';
-                const duration = (Math.random() * 1.2 + 0.3).toFixed(2); 
+                const duration = (Math.random() * 1.1 + 0.3).toFixed(2); 
                 img.style.animation = `${track} ${duration}s infinite linear`;
 
                 jumpscareOverlay.appendChild(img);
             }
         }
 
+        // Generate the background DOM early
         preSpawnSpiders();
 
         function startExperience() {
