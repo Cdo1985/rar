@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Website</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #111;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Initial Interaction Overlay */
+        #interaction-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #111;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .start-btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background-color: #222;
+            color: #fff;
+            border: 2px solid #444;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .start-btn:hover {
+            background-color: #333;
+            border-color: #666;
+        }
+
+        /* The Hidden Pop-up Overlay */
+        .scare-overlay {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.95); 
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            perspective: 1000px; 
+            overflow: hidden;
+        }
+
+        /* Container for the main chaotic spider images */
+        .spider-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            max-width: 90%;
+            z-index: 10;
+        }
+
+        .spider-img {
+            width: 45%;
+            max-width: 400px;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0px 0px 30px rgba(255, 0, 0, 0.8));
+        }
+
+        /* Scurrying Spiders Layer */
+        .scurry-spider {
+            position: absolute;
+            pointer-events: none;
+            z-index: 5;
+            object-fit: contain;
+            filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.9));
+        }
+
+        /* Screaming Text */
+        .scare-text {
+            color: #ff0000;
+            font-size: 5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-top: 30px;
+            font-family: 'Impact', sans-serif;
+            letter-spacing: 10px;
+            text-shadow: 0 0 10px #000, 0 0 30px #ff0000;
+            z-index: 10;
+        }
+
+        /* --- ANIMATIONS --- */
+        .chaotic-vibration {
+            animation: violent-twitch 0.04s infinite linear;
+        }
+
+        @keyframes violent-twitch {
+            0%   { transform: translate(6px, 6px)   rotate(4deg)   scale(1.15); }
+            20%  { transform: translate(-10px, 9px)  rotate(2deg)   scale(1.2); }
+            40%  { transform: translate(-3px, 8px)  rotate(5deg)   scale(1.1); }
+            60%  { transform: translate(-11px, 3px)  rotate(3deg)   scale(1.25); }
+            80%  { transform: translate(-5px, -8px) rotate(6deg)   scale(1.15); }
+            100% { transform: translate(-2px, 7px)  rotate(0deg)   scale(1.1); }
+        }
+
+        /* Erratic scurrying trajectories */
+        @keyframes scurry-track-1 {
+            0%   { transform: translate(0, 0) rotate(0deg); }
+            25%  { transform: translate(180px, -100px) rotate(45deg); }
+            50%  { transform: translate(90px, 220px) rotate(-90deg); }
+            75%  { transform: translate(-120px, 60px) rotate(180deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        @keyframes scurry-track-2 {
+            0%   { transform: translate(0, 0) rotate(180deg); }
+            30%  { transform: translate(-220px, 180px) rotate(90deg); }
+            60%  { transform: translate(120px, -120px) rotate(270deg); }
+            100% { transform: translate(0, 0) rotate(180deg); }
+        }
+
+        /* Tiny micro-vibration loop attached to scurrying spiders */
+        .bug-twitch {
+            animation: bug-shake 0.04s infinite linear;
+        }
+        @keyframes bug-shake {
+            0% { margin: 2px 3px; }
+            50% { margin: -3px -2px; }
+            100% { margin: 2px 3px; }
+        }
+
+        /* Flash background */
+        .flash-bg {
+            animation: screen-flash 0.1s infinite alternate;
+        }
+
+        @keyframes screen-flash {
+            0% { background-color: rgba(0, 0, 0, 0.98); }
+            100% { background-color: rgba(50, 0, 0, 0.98); } 
+        }
+
+        /* Close Button */
+        .close-btn {
+            margin-top: 40px;
+            padding: 12px 30px;
+            background-color: #111;
+            color: #666;
+            border: 1px solid #333;
+            cursor: pointer;
+            font-size: 0.9rem;
+            border-radius: 3px;
+            z-index: 10;
+        }
+        .close-btn:hover {
+            color: #fff;
+            border-color: #ff0000;
+            background-color: #200;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="interaction-overlay">
+        <h2>This page contains media content.</h2>
+        <button class="start-btn" onclick="startExperience()">Continue to Site</button>
+    </div>
+
+    <div style="text-align: center;">
+        <h1>Loading Content...</h1>
+        <p>Please wait a moment while the dashboard syncs.</p>
+    </div>
+
+    <div id="jumpscare" class="scare-overlay flash-bg">
+        <div class="spider-container chaotic-vibration">
+            <img class="spider-img" src="https://server-a708dbd3cd91a21f.dev-studio.neynar.com/1779847394248.png" alt="Spider 1">
+            <img class="spider-img" src="https://server-a708dbd3cd91a21f.dev-studio.neynar.com/1779847342571.png" alt="Spider 2">
+        </div>
+        
+        <div class="scare-text chaotic-vibration">RUN</div>
+        
+        <button class="close-btn" onclick="closeScare()">Close</button>
+    </div>
+
+    <audio id="scream-audio" src="https://actions.google.com/sounds/v1/horror/male_screams_and_shouts.ogg" preload="auto"></audio>
+
+    <script>
+        const audio = document.getElementById('scream-audio');
+        const jumpscareOverlay = document.getElementById('jumpscare');
+        
+        // This asset path handles all the little background spiders
+        const littleSpiderSrc = 'https://server-a708dbd3cd91a21f.dev-studio.neynar.com/1779821114849.png';
+
+        function spawnScurryingSpiders() {
+            const count = 35; // Bumped up count for an intense swarm density
+            
+            for (let i = 0; i < count; i++) {
+                const img = document.createElement('img');
+                img.src = littleSpiderSrc;
+                img.classList.add('scurry-spider', 'bug-twitch');
+
+                // Variations for sizes strictly on the smaller scale (25px to 85px)
+                const size = Math.floor(Math.random() * 60) + 25; 
+                img.style.width = `${size}px`;
+                img.style.height = 'auto';
+
+                // Scatter initial locations everywhere
+                img.style.top = `${Math.floor(Math.random() * 90)}vh`;
+                img.style.left = `${Math.floor(Math.random() * 90)}vw`;
+
+                // Alternate between layout translation paths
+                const track = Math.random() > 0.5 ? 'scurry-track-1' : 'scurry-track-2';
+                const duration = (Math.random() * 1.2 + 0.3).toFixed(2); // fast cycles (0.3s to 1.5s)
+                img.style.animation = `${track} ${duration}s infinite linear`;
+
+                jumpscareOverlay.appendChild(img);
+            }
+        }
+
+        function startExperience() {
+            document.getElementById('interaction-overlay').style.display = 'none';
+            audio.volume = 1.0;
+
+            setTimeout(() => {
+                jumpscareOverlay.style.display = 'flex';
+                spawnScurryingSpiders(); 
+                audio.play().catch(e => console.log("Audio prevented:", e));
+            }, 2000);
+        }
+
+        function closeScare() {
+            jumpscareOverlay.style.display = 'none';
+            audio.pause();
+            audio.currentTime = 0;
+            
+            // Clean up the spawned swarm spiders on close
+            const extraSpiders = document.querySelectorAll('.scurry-spider');
+            extraSpiders.forEach(spider => spider.remove());
+        }
+    </script>
+
+</body>
+</html>
